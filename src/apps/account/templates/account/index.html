@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+        <title>Clients list</title>
+    </head>
+    <body>
+
+        {% for client in clients %}
+        <table border="2" style="width: 100%; margin-bottom: 30px;">
+            <tr>
+                <td>Client name</td>
+                <td>Email</td>
+                <td>Phone</td>
+                <td>Edit Profile</td>
+            </tr>
+            <tr style="margin-bottom: 10px;">
+                <td>{{ client.client_name }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.phone_number }}</td>
+                <td><button onclick="location.href='http://127.0.0.1:8000/account/edit-client/{{ client.id }}'" type="button">Edit profile</button></td>
+            </tr>
+            {% if client.address_set.all %}
+                <tr>
+                    <td>Contact name</td>
+                    <td>Street</td>
+                    <td>Suburb</td>
+                    <td>State</td>
+                    <td>Zip code</td>
+                </tr>
+                {% for address in client.address_set.all|dictsort:"contact_name" %}
+                    <tr>
+                        <td>{{ address.contact_name }}</td>
+                        <td>{{ address.street }}</td>
+                        <td>{{ address.suburb }}</td>
+                        <td>{{ address.state }}</td>
+                        <td>{{ address.zip_code }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+        {% endfor %}
+
+        <form>
+            <input type="search" placeholder="Search" name="search" value="{{ search_value }}">
+            <select name="sort_by">
+                <option value="client_name">Client name</option>
+                <option value="email">Email</option>
+                <option value="phone_number">Phone</option>
+                <option value="address__suburb">Suburb</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+
+        <div>
+            {% if clients.has_previous %}
+                {% if search_value and sort_value %}
+                <a href="?page=1&search={{ search_value }}&sort_by={{ sort_value }}">First</a>
+                <a href="?page={{ clients.previous_page_number }}&search={{ search_value }}&sort_by={{ sort_value }}">Previous</a>
+                {% elif search_value %}
+                <a href="?page=1&search={{ search_value }}">First</a>
+                <a href="?page={{ clients.previous_page_number }}&search={{ search_value }}">Previous</a>
+                {% else %}
+                <a href="?page=1&sort_by={{ sort_value }}">First</a>
+                <a href="?page={{ clients.previous_page_number }}&sort_by={{ sort_value }}">Previous</a>
+                {% endif %}
+            {% endif %}
+
+            {% for num in clients.paginator.page_range %}
+
+            {% if clients.number == num %}
+            <span>{{ num }}</span>
+            {% elif num > clients.number|add:'-3' and num < clients.number|add:'3' %}
+                {% if search_value and sort_value %}
+                <a href="?page={{ num }}&search={{ search_value }}&sort_by={{ sort_value }}">{{ num }}</a>
+                {% elif search_value %}
+                <a href="?page={{ num }}&search={{ search_value }}">{{ num }}</a>
+                {% else %}
+                <a href="?page={{ num }}&sort_by={{ sort_value }}">{{ num }}</a>
+                {% endif %}
+            {% endif %}
+
+            {% endfor %}
+
+            {% if clients.has_next %}
+                {% if search_value and sort_value %}
+                <a href="?page={{ clients.next_page_number }}&search={{ search_value }}&sort_by={{ sort_value }}">Next</a>
+                <a href="?page={{ clients.paginator.num_pages }}&search={{ search_value }}&sort_by={{ sort_value }}">Last</a>
+                {% elif search_value %}
+                <a href="?page={{ clients.next_page_number }}&search={{ search_value }}">Next</a>
+                <a href="?page={{ clients.paginator.num_pages }}&search={{ search_value }}">Last</a>
+                {% else %}
+                <a href="?page={{ clients.next_page_number }}&sort_by={{ sort_value }}">Next</a>
+                <a href="?page={{ clients.paginator.num_pages }}&sort_by={{ sort_value }}">Last</a>
+                {% endif %}
+            {% endif %}
+
+        </div>
+    </body>
+</html>
