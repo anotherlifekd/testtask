@@ -8,11 +8,7 @@ services:
   web:
     build: .
     container_name: testproject
-    command: >
-      bash -c "python /code/src/manage.py migrate
-      && python /code/src/manage.py create_states
-      && python /code/src/manage.py create_clients
-      && python /code/src/manage.py runserver 0.0.0.0:8000"
+    command: python /code/src/manage.py runserver 0.0.0.0:8000
     ports:
       - 8000:8000
     volumes:
