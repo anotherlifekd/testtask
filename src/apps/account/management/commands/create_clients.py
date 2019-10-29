@@ -27,6 +27,8 @@ domains = ["hotmail.com", "gmail.com", "mail.com", "mail.ru", "yahoo.com", "yand
 class Command(BaseCommand):
     help = 'Create clients'
 
+
+
     def handle(self, *args, **options):
         result = []
 

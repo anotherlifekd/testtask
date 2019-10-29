@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:11.5-alpine
+    volumes:
+      - /var/lib/postgresql/data/
+  web:
+    build: .
+    container_name: testproject
+    command: python /code/src/manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/src
+    depends_on:
+      - db
